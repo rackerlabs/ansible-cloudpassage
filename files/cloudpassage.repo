@@ -1,0 +1,4 @@
+[cloudpassage]
+name=CloudPassage
+baseurl=http://packages.cloudpassage.com/redhat/\$basearch
+gpgcheck=1

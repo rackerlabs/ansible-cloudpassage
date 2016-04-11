@@ -1,0 +1,30 @@
+- name: Check for registration key
+  fail:
+    msg: Variable 'cloudpassage_agent_registration_key' was not provided
+  when: not cloudpassage_agent_registration_key
+
+- name: Check for tag
+  fail:
+    msg: Variable 'cloudpassage_agent_tag' was not provided
+  when: not cloudpassage_agent_tag
+
+- name: Add package repository
+  become: true
+  copy:
+    src: cloudpassage.repo
+    dest: /etc/yum.repos.d
+
+- name: Trust repository signing key
+  become: true
+  rpm_key:
+    key: "{{ cloudpassage_package_signing_key_url }}"
+
+- name: Install CloudPassage package
+  become: true
+  yum:
+    name: cphalo
+    state: latest
+
+- name: Configure CloudPassage agent
+  become: true
+  shell: "/opt/cloudpassage/bin/configure --agent-key={{ cloudpassage_agent_registration_key }} --tag={{ cloudpassage_agent_tag }}"
